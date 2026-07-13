@@ -1,0 +1,116 @@
+```django
+{% extends 'base.html' %}
+
+{% block title %}افزودن دسته‌بندی{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-lg w-full">
+
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
+
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-8 py-6">
+                <h1 class="text-2xl font-black text-white flex items-center gap-3">
+                    <svg class="h-7 w-7"
+                         fill="none"
+                         stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M12 4v16m8-8H4"/>
+                    </svg>
+
+                    افزودن دسته‌بندی جدید
+                </h1>
+
+                <p class="mt-2 text-sm text-primary-100">
+                    برای مرتب‌سازی بهتر کارهای خود یک دسته‌بندی ایجاد کنید.
+                </p>
+            </div>
+
+            <!-- Body -->
+            <div class="px-8 py-8">
+
+                <form method="post" class="space-y-6">
+
+                    {% csrf_token %}
+
+                    <!-- نام دسته‌بندی -->
+                    <div>
+                        <label for="{{ form.name.id_for_label }}"
+                               class="block text-sm font-bold text-slate-700 mb-2">
+                            نام دسته‌بندی
+                        </label>
+
+                        {{ form.name }}
+
+                        {% if form.name.errors %}
+                            <div class="mt-2 text-sm text-rose-600">
+                                {{ form.name.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- رنگ دسته‌بندی -->
+                    <div>
+                        <label for="{{ form.color.id_for_label }}"
+                               class="block text-sm font-bold text-slate-700 mb-2">
+                            رنگ دسته‌بندی
+                        </label>
+
+                        <div class="flex items-center gap-4">
+                            {{ form.color }}
+
+                            <p class="text-sm text-slate-500">
+                                یک رنگ برای دسته‌بندی انتخاب کنید.
+                            </p>
+                        </div>
+
+                        {% if form.color.errors %}
+                            <div class="mt-2 text-sm text-rose-600">
+                                {{ form.color.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex justify-between items-center pt-6 border-t border-slate-200">
+
+                        <button type="submit"
+                                class="inline-flex items-center gap-2 px-7 py-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white rounded-xl font-black shadow-lg transition-all">
+
+                            <svg class="h-5 w-5"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M5 13l4 4L19 7"/>
+                            </svg>
+
+                            ایجاد دسته‌بندی
+                        </button>
+
+                        <a href="{% url 'todos:create' %}"
+                           class="inline-flex items-center gap-2 px-7 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-all">
+
+                            انصراف
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+```

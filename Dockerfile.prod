@@ -28,6 +28,14 @@ RUN tailwindcss -i ./static/src/input.css -o ./static/css/output.css --minify
 
 # جمع‌آوری فایل‌های استاتیک برای production
 RUN mkdir -p /app/staticfiles /app/media
+
+ENV SECRET_KEY=build-time-placeholder-not-real \
+    DB_NAME=placeholder \
+    DB_USER=placeholder \
+    DB_PASSWORD=placeholder \
+    DB_HOST=placeholder \
+    DB_PORT=5432
+
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000

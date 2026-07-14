@@ -1,0 +1,36 @@
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    gcc \
+    python3-dev \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
+
+# دانلود و کش کردن باینری Tailwind
+RUN tailwindcss --help > /dev/null 2>&1 || true
+
+COPY . .
+
+# ساخت فایل نهایی و بهینه‌شده‌ی CSS
+RUN tailwindcss -i ./static/src/input.css -o ./static/css/output.css --minify
+
+# جمع‌آوری فایل‌های استاتیک برای production
+RUN mkdir -p /app/staticfiles /app/media
+RUN python manage.py collectstatic --noinput
+
+EXPOSE 8000
+
+# اجرا با gunicorn به‌جای runserver (امن‌تر و بهینه‌تر برای production)
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]

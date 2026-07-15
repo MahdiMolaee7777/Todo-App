@@ -17,12 +17,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # Third party apps
     'crispy_forms',
     'crispy_bootstrap5',
     'widget_tweaks',
-    
+
     # Local apps
     'apps.accounts',
     'apps.todos',
@@ -30,6 +30,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',   # <-- اضافه شد (برای سرو کردن CSS/JS)
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -67,7 +68,9 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD'),
         'HOST': config('DB_HOST'),
         'PORT': config('DB_PORT'),
-       
+        'OPTIONS': {'sslmode': 'require'},   # <-- اضافه شد (Neon اجباریش می‌کنه)
+        'CONN_MAX_AGE': 600,                  # <-- اضافه شد
+        'CONN_HEALTH_CHECKS': True,           # <-- اضافه شد
     }
 }
 
@@ -92,6 +95,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
+STORAGES = {   # <-- اضافه شد (whitenoise از این استفاده می‌کنه)
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Media files
 MEDIA_URL = '/media/'
@@ -119,7 +128,9 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
-
 AUTHENTICATION_BACKENDS = [
     'apps.accounts.backends.EmailOrUsernameBackend',
 ]
+
+# Security for production behind Render's proxy
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='').split(',')   # <-- اضافه شد

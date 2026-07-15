@@ -40,5 +40,5 @@ RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-# اجرا با gunicorn به‌جای runserver (امن‌تر و بهینه‌تر برای production)
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+# اجرا با shell form تا هم && کار کنه، هم $PORT خونده بشه
+CMD python manage.py migrate && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 3

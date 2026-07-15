@@ -18,14 +18,14 @@ COPY requirements.txt .
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
-# دانلود و کش کردن باینری Tailwind (که تو ایمیج ذخیره بشه)
-RUN tailwindcss --help > /dev/null 2>&1 || true
-
-# کپی کد پروژه
+# کپی کد پروژه (شامل باینری محلی Tailwind تو bin/)
 COPY . .
 
-# ساخت فایل CSS نهایی از Tailwind
-RUN tailwindcss -i ./static/src/input.css -o ./static/css/output.css --minify
+# اجرایی کردن باینری محلی Tailwind
+RUN chmod +x ./bin/tailwindcss
+
+# ساخت فایل CSS نهایی از Tailwind (با استفاده از باینری محلی، بدون دانلود)
+RUN ./bin/tailwindcss -i ./styles/input.css -o ./static/css/output.css --minify
 
 # ساخت دایرکتوری‌های static و media
 RUN mkdir -p /app/staticfiles /app/media

@@ -68,9 +68,11 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD'),
         'HOST': config('DB_HOST'),
         'PORT': config('DB_PORT'),
-        'OPTIONS': {'sslmode': 'require'},   # <-- اضافه شد (Neon اجباریش می‌کنه)
-        'CONN_MAX_AGE': 600,                  # <-- اضافه شد
-        'CONN_HEALTH_CHECKS': True,           # <-- اضافه شد
+        'OPTIONS': {
+            'sslmode': config('DB_SSLMODE', default='disable'),
+        },
+        'CONN_MAX_AGE': 600,
+        'CONN_HEALTH_CHECKS': True,
     }
 }
 

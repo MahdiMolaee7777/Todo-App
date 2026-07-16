@@ -12,19 +12,22 @@ RUN apt-get update && apt-get install -y \
     gcc \
     python3-dev \
     libpq-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 # کپی و نصب requirements
 COPY requirements.txt .
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
-# کپی کد پروژه (شامل باینری محلی Tailwind تو bin/)
+# دانلود باینری Tailwind در حین build
+RUN mkdir -p bin && \
+    curl -fL https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64 -o bin/tailwindcss && \
+    chmod +x bin/tailwindcss
+
+# کپی کد پروژه
 COPY . .
 
-# اجرایی کردن باینری محلی Tailwind
-RUN chmod +x ./bin/tailwindcss
-
-# ساخت فایل CSS نهایی از Tailwind (با استفاده از باینری محلی، بدون دانلود)
+# ساخت فایل CSS نهایی از Tailwind
 RUN ./bin/tailwindcss -i ./styles/input.css -o ./static/css/output.css --minify
 
 # ساخت دایرکتوری‌های static و media

@@ -256,3 +256,4 @@ local_settings.py
 
 # Docker
 docker-compose.override.yml
+bin/tailwindcss

@@ -14,15 +14,21 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     curl \
     && rm -rf /var/lib/apt/lists/*
+
+
+# دانلود باینری Tailwind (با retry برای مقابله با قطعی شبکه)
+RUN mkdir -p bin && \
+    curl -fL --retry 8 --retry-delay 5 --retry-all-errors --connect-timeout 30 \
+    https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64 -o bin/tailwindcss && \
+    chmod +x bin/tailwindcss
+
+
 # کپی و نصب requirements
 COPY requirements.txt .
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
-# دانلود باینری Tailwind در حین build
-RUN mkdir -p bin && \
-    curl -fL https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64 -o bin/tailwindcss && \
-    chmod +x bin/tailwindcss
+
 
 # کپی کد پروژه
 COPY . .

@@ -1,8 +1,22 @@
 from django import forms
 from .models import Todo, Category
+import jdatetime
 
 
 class TodoForm(forms.ModelForm):
+
+    due_date = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'data-jdp': '',
+                'autocomplete': 'off',
+                'class': 'w-full px-4 py-2 border border-slate-300 rounded-lg',
+                'placeholder': 'انتخاب تاریخ',
+            }
+        )
+    )
+
     class Meta:
         model = Todo
         fields = [
@@ -38,14 +52,6 @@ class TodoForm(forms.ModelForm):
                 attrs={'class': 'form-select'}
             ),
 
-            'due_date': forms.DateInput(
-                format='%Y-%m-%d',
-                attrs={
-                    'class': 'form-control',
-                    'type': 'date',
-                }
-            ),
-
             'completed': forms.CheckboxInput(
                 attrs={'class': 'form-check-input'}
             ),
@@ -55,14 +61,26 @@ class TodoForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        self.fields['due_date'].input_formats = [
-            '%Y-%m-%d'
-        ]
+        if self.instance.pk and self.instance.due_date:
+            jalali_date = jdatetime.date.fromgregorian(
+                date=self.instance.due_date
+            )
+            self.initial["due_date"] = jalali_date.strftime("%Y/%m/%d")
 
         if user:
-            self.fields['category'].queryset = Category.objects.filter(
-                user=user
-            )
+            self.fields["category"].queryset = Category.objects.filter(user=user)
+
+    def clean_due_date(self):
+        value = self.cleaned_data.get("due_date")
+
+        if not value:
+            return None
+
+        try:
+            year, month, day = map(int, value.split("/"))
+            return jdatetime.date(year, month, day).togregorian()
+        except Exception:
+            raise forms.ValidationError("فرمت تاریخ نامعتبر است.")
 
 
 class CategoryForm(forms.ModelForm):

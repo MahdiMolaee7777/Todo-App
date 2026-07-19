@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl" class="h-full">
 {% load static %}
+
+
+
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}مدیریت کارها{% endblock %}</title>
     
     <link href="{% static 'css/output.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
     
     <!-- فونت زیبای وزیرمتن -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,6 +45,10 @@
             }
         }
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
+
+    <script>jalaliDatepicker.startWatch({ time: false, persianDigits: true, autoHide: true });</script>
     
     <style>
         body {
